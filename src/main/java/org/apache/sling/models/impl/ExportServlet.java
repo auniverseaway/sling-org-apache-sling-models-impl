@@ -33,6 +33,7 @@ import javax.script.SimpleBindings;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.CharEncoding;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.scripting.SlingBindings;
@@ -90,6 +91,8 @@ class ExportServlet extends SlingSafeMethodsServlet {
         ScriptHelper scriptHelper = new ScriptHelper(bundleContext, null, request, response);
 
         try {
+            // Character encoding must be set before adding the response to script bindings
+            response.setCharacterEncoding(CharEncoding.UTF_8);
             addScriptBindings(scriptHelper, request, response);
             String exported;
             try {
@@ -109,7 +112,6 @@ class ExportServlet extends SlingSafeMethodsServlet {
             }
             response.setContentType(request.getResponseContentType());
             response.getWriter().write(exported);
-
         } finally {
             scriptHelper.cleanup();
         }
